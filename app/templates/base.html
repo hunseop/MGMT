@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FPAT - Firewall Policy Analysis Tool</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <!-- Optional: include a custom CSS file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg sticky-top bg-primary" data-bs-theme="dark">
+        <div class="container-fluid">
+          <a class="navbar-brand m0-h1" href="{{ url_for('index') }}">FPAT</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+              <a class="nav-link active" aria-current="page" href="{{ url_for('index') }}">Home</a>
+              <a class="nav-link active" href="{{ url_for('manage_devices') }}">Devices</a>
+              <a class="nav-link active" href="{{ url_for('command_menu') }}">Commands</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+    <div class="container mt-4">
+        {% block content %}
+        <!-- Content overridden in child templates -->
+        {% endblock %}
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            // 검색 기능
+            $('#search-form').submit(function(e) {
+                e.preventDefault();
+                var query = $('#search-query').val();
+                $.ajax({
+                    url: '/search',
+                    type: 'GET',
+                    data: {query: query},
+                    success: function(data) {
+                        $('#server-list').html(data);
+                    }
+                });
+            });
+    
+            // 명령 전송 기능
+            $('#command-form').submit(function(e) {
+                const isChecked = Array.from($('.server-checkbox')).some(checkbox => checkbox.checked);
+                if (!isChecked) {
+                    e.preventDefault();
+                    alert('Please select at least one server.');
+                }
+            });
+        });
+        $(document).ready(function() {
+                $('#search-form').submit(function() {
+                    var query = $('#search-query').val(); // 검색어 가져오기
+                    $.ajax({
+                        url: '/search', // 검색 처리를 위한 서버의 URL
+                        type: 'GET',
+                        data: {query: query},
+                        success: function(data) {
+                            $('#server-list').html(data); // 서버 목록 컨테이너에 결과 로드
+                        }
+                    });
+                    return false; // 폼 제출에 의한 페이지 리로드 방지
+                });
+            });
+            $(document).ready(function() {
+                $('#select-all').click(function() {
+                    $('.server-checkbox').each(function() {
+                        this.checked = !this.checked;
+                    });
+                });
+            });
+            document.getElementById('command-select').addEventListener('change', function() {
+                // 드롭다운에서 선택된 값을 가져옵니다.
+                var selectedCommand = this.value;
+            
+                // 숨겨진 입력 필드의 값을 업데이트합니다.
+                document.getElementById('command-input').value = selectedCommand;
+            });
+            
+            // 폼 제출 시 숨겨진 입력 필드에 선택된 명령어 값을 설정하기 위해 초기 상태를 설정합니다.
+            document.getElementById('command-input').value = document.getElementById('command-select').value;
+
+
+            document.getElementById('run-command').addEventListener('click', function() {
+            // 로딩 스피너 표시
+            document.getElementById('loading-spinner').style.display = 'inline-block';
+
+            // 가상의 명령 실행을 표현하기 위해 10초 대기
+            setTimeout(function() {
+                // 10초 후 로딩 스피너 숨김
+                document.getElementById('loading-spinner').style.display = 'none';
+                alert('Command execution finished!');
+            }, 10000); // 10초 대기
+        });
+    </script>
+</body>
+</html>

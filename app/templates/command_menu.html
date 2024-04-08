@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-3">
+    <!-- 검색 폼 -->
+    <form id="search-form" onsubmit="return false;" style="margin-bottom: 10px;">
+        <!-- <button class="btn btn-success btn-sm" id="select-all" type="button">Select All</button>
+        <input class="form-control" type="text" id="search-query" placeholder="Search servers...">
+        <button class="btn btn-secondary btn-sm" type="submit">Search</button>
+         -->
+        <div class="input-group">
+            <input type="text" class="form-control" id="search-query" placeholder="Filtering Servers...">
+            <button class="btn btn-outline-secondary" id="search-query" type="submit">Search</button>
+            <button class="btn btn-outline-secondary" id="select-all" type="button">Select All</button>
+        </div>
+    </form>
+
+    <form id="command-form" action="{{ url_for('send_command') }}" method="POST">
+        <div class="input-group"  style="margin-bottom: 10px;">
+            <select class="form-select" id="inputGroupSelect04" aria-label="Example select with button addon">
+              <!-- <option selected>Choose Command</option> -->
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+            </select>
+            <input type="hidden" name="command" id="command-input">
+            <button class="btn btn-outline-secondary" type="submit">Run</button>
+
+        <!-- 로딩 스피너 (초기에는 숨김) -->
+        <div class="spinner-border text-primary" role="status" id="loading-spinner" style="display: none;">
+            <span class="sr-only">Loading...</span>
+        </div>
+        </div>
+        <div id="server-list" class="table-responsive">
+            {% include 'server_list.html' %} <!-- 초기 서버 목록을 포함 -->
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+    

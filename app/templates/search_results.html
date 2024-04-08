@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-3">
+    <h2>Search Results</h2>
+    {% if servers %}
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Server Name</th>
+                    <th>IP Address</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for server in servers %}
+                <tr>
+                    <td>{{ server.name }}</td>
+                    <td>{{ server.ip_address }}</td>
+                    <td>
+                        <a href="{{ url_for('edit_server', server_id=server.id) }}" class="btn btn-sm btn-info">Edit</a>
+                        <form action="{{ url_for('delete_server', server_id=server.id) }}" method="POST" class="d-inline">
+                            <input type="submit" value="Delete" class="btn btn-sm btn-danger">
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p>No servers found matching your search criteria.</p>
+    {% endif %}
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Server List</a>
+</div>
+{% endblock %}

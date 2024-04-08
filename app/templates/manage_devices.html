@@ -1,0 +1,43 @@
+<!-- templates/manage_devices.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-3">
+    <h2>Devices Management</h2>
+    <form action="{{ url_for('manage_devices') }}" method="POST" class="mb-3">
+        {{ form.hidden_tag() }}
+        <div class="form-row">
+            <form action="{{ url_for('index') }}" method="POST" class="mb-3">
+                {{ form.hidden_tag() }}
+                <div class="form-row">
+                    <div class="col">
+                        {{ form.name.label(class="form-label") }}
+                        {{ form.name(class="form-control") }}
+                    </div>
+                    <div class="col">
+                        {{ form.ip_address.label(class="form-label") }}
+                        {{ form.ip_address(class="form-control") }}
+                    </div>
+                    <div class="col">
+                        {{ form.vendor.label(class="form-label") }}
+                        {{ form.vendor(class="form-control") }}
+                    </div>
+                    <div class="col">
+                        {{ form.description.label(class="form-label") }}
+                        {{ form.description(class="form-control") }}
+                    </div>
+                    <div class="d-grid gap-2">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </form>
+
+    <!-- 업로드 페이지로 이동하는 버튼 -->
+    <a href="{{ url_for('upload_file') }}" class="btn btn-secondary mb-3">Upload Devices</a>
+
+    <!-- 서버 목록 표시 -->
+    <!-- 기존 index.html에서 사용된 서버 목록 관련 코드를 여기에 포함시킵니다. -->
+</div>
+{% endblock %}
