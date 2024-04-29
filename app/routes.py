@@ -1,10 +1,12 @@
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash, send_file
+import tempfile
 from . import db
 from .forms import UploadForm
 from .models import Server
 from .forms import ServerForm
 from flask import current_app as app
 import pandas as pd
+from features import generate_df
 
 @app.route('/')
 def index():
@@ -60,17 +62,44 @@ def search_servers():
     ).all()
     return render_template('server_list.html', servers=servers)
 
+
 @app.route('/send_command', methods=['POST'])
 def send_command():
     server_ids = request.form.getlist('server_ids')
     command = request.form['command']
-    # 여기서 실제 명령어 전송 로직을 구현해야 합니다.
-    # 예시 코드에서는 명령어 전송 과정을 생략하고, 성공 메시지만 표시합니다.
+    dfs = []  # 데이터프레임을 저장할 리스트
     for server_id in server_ids:
         server = Server.query.get(server_id)
         print(f"Sending command '{command}' to {server.name} ({server.ip_address})")
-    flash('Command successfully sent to selected servers!', 'success')
-    return redirect(url_for('command_menu'))
+        df = generate_df.generate_dataframe(server.vendor, server.ip_address, 'root', '12345', command)
+        dfs.append(df)
+
+    # 데이터프레임을 엑셀 파일로 합침
+    combined_df = pd.concat(dfs)
+
+    # 엑셀 파일로 저장
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.xlsx') as tmp:
+        combined_df.to_excel(tmp.name, index=False)
+        tmp.close()
+        tmp_path = tmp.name
+
+    # 다운로드할 파일명 설정
+    filename = 'result.xlsx'
+
+    # 다운로드할 파일을 클라이언트에게 보내기
+    return send_file(tmp_path, as_attachment=True, download_name=filename)
+
+# @app.route('/send_command', methods=['POST'])
+# def send_command():
+#     server_ids = request.form.getlist('server_ids')
+#     command = request.form['command']
+#     dfs = []
+#     for server_id in server_ids:
+#         server = Server.query.get(server_id)
+#         print(f"Sending command '{command}' to {server.name} ({server.ip_address})")
+#         generate_df.generate_dataframe(server.vendor, server.ip_address, 'root', '12345', command)
+#     flash('Command successfully sent to selected servers!', 'success')
+#     return redirect(url_for('command_menu'))
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
@@ -106,3 +135,11 @@ def manage_devices():
         return redirect(url_for('manage_devices'))
     servers = Server.query.all()
     return render_template('manage_devices.html', form=form, servers=servers)
+
+@app.route('/connect', methods=['GET', 'POST'])
+def connect_firewall():
+    return render_template('connect_firewall.html')
+
+@app.route('/connect_list', methods=['GET', 'POST'])
+def show_devices():
+    return render_template('show_devices.html')

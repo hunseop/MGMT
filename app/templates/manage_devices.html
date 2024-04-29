@@ -7,30 +7,25 @@
     <form action="{{ url_for('manage_devices') }}" method="POST" class="mb-3">
         {{ form.hidden_tag() }}
         <div class="form-row">
-            <form action="{{ url_for('index') }}" method="POST" class="mb-3">
-                {{ form.hidden_tag() }}
-                <div class="form-row">
-                    <div class="col">
-                        {{ form.name.label(class="form-label") }}
-                        {{ form.name(class="form-control") }}
-                    </div>
-                    <div class="col">
-                        {{ form.ip_address.label(class="form-label") }}
-                        {{ form.ip_address(class="form-control") }}
-                    </div>
-                    <div class="col">
-                        {{ form.vendor.label(class="form-label") }}
-                        {{ form.vendor(class="form-control") }}
-                    </div>
-                    <div class="col">
-                        {{ form.description.label(class="form-label") }}
-                        {{ form.description(class="form-control") }}
-                    </div>
-                    <div class="d-grid gap-2">
-                        {{ form.submit(class="btn btn-primary") }}
-                    </div>
-                </div>
-            </form>
+            <div class="col">
+                {{ form.name.label(class="form-label") }}
+                {{ form.name(class="form-control") }}
+            </div>
+            <div class="col">
+                {{ form.ip_address.label(class="form-label") }}
+                {{ form.ip_address(class="form-control") }}
+            </div>
+            <div class="col">
+                {{ form.vendor.label(class="form-label") }}
+                {{ form.vendor(class="form-control") }}
+            </div>
+            <div class="col mb-3">
+                {{ form.description.label(class="form-label") }}
+                {{ form.description(class="form-control") }}
+            </div>
+            <div class="d-grid gap-2">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
         </div>
     </form>
 

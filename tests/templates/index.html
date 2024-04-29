@@ -1,0 +1,31 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask Loading Example</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Flask Loading Example</h1>
+    <button id="run-task-btn">Run Task</button>
+    <div id="loading" style="display: none;">Loading...</div>
+
+    <script>
+        $(document).ready(function() {
+            $('#run-task-btn').click(function() {
+                $('#loading').show(); // 로딩 표시 보이기
+                $.ajax({
+                    url: '/run_task',
+                    type: 'POST',
+                    success: function(response) {
+                        $('#loading').hide(); // 로딩 표시 숨기기
+                        alert(response.status); // 작업 완료 알림
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
